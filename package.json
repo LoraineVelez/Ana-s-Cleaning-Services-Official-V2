@@ -1,0 +1,11 @@
+
+{
+  "name": "anas-cleaning-services",
+  "version": "1.0.0",
+  "description": "A modern cleaning company website for Philadelphia",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {}
+}
