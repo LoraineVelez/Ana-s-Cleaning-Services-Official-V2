@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, CheckCircle2, Building2, User, MapPin, ClipboardList, Clock, Loader2, Sparkles, Calendar, Phone, Mail, Key } from 'lucide-react';
 import { useQuoteForm } from '../context/QuoteContext';
@@ -21,7 +22,19 @@ const CommercialQuoteModal = () => {
   const { t } = useTranslation();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   
+  const businessNameRef = useRef<HTMLInputElement>(null);
+  const firstNameRef = useRef<HTMLInputElement>(null);
+  const lastNameRef = useRef<HTMLInputElement>(null);
+  const phoneRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const streetRef = useRef<HTMLInputElement>(null);
+  const cityRef = useRef<HTMLInputElement>(null);
+  const stateRef = useRef<HTMLInputElement>(null);
+  const zipRef = useRef<HTMLInputElement>(null);
+  const sqftRef = useRef<HTMLInputElement>(null);
+
   const [formData, setFormData] = useState({
     businessName: '',
     firstName: '',
@@ -64,6 +77,7 @@ const CommercialQuoteModal = () => {
     if (isCommercialQuoteOpen) {
       document.body.style.overflow = 'hidden';
       setIsSubmitted(false);
+      setErrors({});
     } else {
       document.body.style.overflow = 'unset';
     }
@@ -71,6 +85,57 @@ const CommercialQuoteModal = () => {
 
   const handleInputChange = (field: string, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+    if (errors[field]) {
+      setErrors(prev => {
+        const next = { ...prev };
+        delete next[field];
+        return next;
+      });
+    }
+  };
+
+  const validate = () => {
+    const newErrors: Record<string, string> = {};
+    
+    if (!formData.businessName.trim()) newErrors.businessName = "Business name is required";
+    if (!formData.firstName.trim()) newErrors.firstName = "First name is required";
+    if (!formData.lastName.trim()) newErrors.lastName = "Last name is required";
+    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!emailRegex.test(formData.email)) {
+      newErrors.email = "Enter a valid email address";
+    }
+
+    const digits = formData.phone.replace(/\D/g, '');
+    if (!formData.phone.trim()) {
+      newErrors.phone = "Phone is required";
+    } else if (digits.length !== 10) {
+      newErrors.phone = "Enter a valid 10-digit US phone number";
+    }
+
+    if (!formData.street.trim()) newErrors.street = "Street address is required";
+    if (!formData.city.trim()) newErrors.city = "City is required";
+    if (!formData.state.trim() || formData.state.length !== 2) newErrors.state = "2-letter state required";
+    if (!formData.zip.trim() || !/^\d{5}(-\d{4})?$/.test(formData.zip)) newErrors.zip = "Valid 5-digit zip required";
+    if (!formData.sqft.trim()) newErrors.sqft = "Approx. sqft is required";
+
+    setErrors(newErrors);
+
+    // Focus first error
+    if (newErrors.businessName) businessNameRef.current?.focus();
+    else if (newErrors.firstName) firstNameRef.current?.focus();
+    else if (newErrors.lastName) lastNameRef.current?.focus();
+    else if (newErrors.email) emailRef.current?.focus();
+    else if (newErrors.phone) phoneRef.current?.focus();
+    else if (newErrors.street) streetRef.current?.focus();
+    else if (newErrors.city) cityRef.current?.focus();
+    else if (newErrors.state) stateRef.current?.focus();
+    else if (newErrors.zip) zipRef.current?.focus();
+    else if (newErrors.sqft) sqftRef.current?.focus();
+
+    return Object.keys(newErrors).length === 0;
   };
 
   const toggleArrayItem = (field: 'services' | 'preferredDays', value: string) => {
@@ -85,6 +150,8 @@ const CommercialQuoteModal = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.acknowledgment) return;
+    if (!validate()) return;
+
     setIsSubmitting(true);
     
     const webhookUrl = "https://hooks.zapier.com/hooks/catch/26066533/ugqpdwr/";
@@ -92,6 +159,9 @@ const CommercialQuoteModal = () => {
     const refId = generateRefId();
     const today = new Date().toISOString().split('T')[0];
     
+    // Normalize phone to E.164
+    const normalizedPhone = `+1${formData.phone.replace(/\D/g, '')}`;
+
     const payload = {
       'form-name': formName,
       'bot-field': formData['bot-field'],
@@ -99,7 +169,7 @@ const CommercialQuoteModal = () => {
       first_name: formData.firstName,
       last_name: formData.lastName,
       email: formData.email,
-      phone: formData.phone,
+      phone: normalizedPhone,
       street_address: formData.street,
       apt_suite: formData.apt,
       city: formData.city,
@@ -197,6 +267,7 @@ const CommercialQuoteModal = () => {
                 </motion.div>
               ) : (
                 <form 
+                  noValidate
                   name="Commercial Quote Request"
                   method="POST"
                   data-netlify="true"
@@ -216,23 +287,28 @@ const CommercialQuoteModal = () => {
                     <div className="grid md:grid-cols-2 gap-4 md:gap-6">
                       <div className="md:col-span-2 space-y-2">
                         <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Business Name (Company)</label>
-                        <input name="company" required type="text" value={formData.businessName} onChange={e => handleInputChange('businessName', e.target.value)} className="w-full bg-gray-50 border-2 border-gray-100 focus:border-gray-900 focus:bg-white p-4 rounded-xl outline-none transition-all font-medium text-gray-900" placeholder="Company LLC" />
+                        <input ref={businessNameRef} name="company" required type="text" value={formData.businessName} onChange={e => handleInputChange('businessName', e.target.value)} className={`w-full bg-gray-50 border-2 ${errors.businessName ? 'border-red-300' : 'border-gray-100'} focus:border-gray-900 focus:bg-white p-4 rounded-xl outline-none transition-all font-medium text-gray-900`} placeholder="Company LLC" />
+                        {errors.businessName && <p className="text-red-500 text-[10px] font-bold mt-1 ml-1">{errors.businessName}</p>}
                       </div>
                       <div className="space-y-2">
                         <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">First Name</label>
-                        <input name="first_name" required type="text" value={formData.firstName} onChange={e => handleInputChange('firstName', e.target.value)} className="w-full bg-gray-50 border-2 border-gray-100 focus:border-gray-900 focus:bg-white p-4 rounded-xl outline-none transition-all font-medium text-gray-900" placeholder="Jane" />
+                        <input ref={firstNameRef} name="first_name" required type="text" value={formData.firstName} onChange={e => handleInputChange('firstName', e.target.value)} className={`w-full bg-gray-50 border-2 ${errors.firstName ? 'border-red-300' : 'border-gray-100'} focus:border-gray-900 focus:bg-white p-4 rounded-xl outline-none transition-all font-medium text-gray-900`} placeholder="Jane" />
+                        {errors.firstName && <p className="text-red-500 text-[10px] font-bold mt-1 ml-1">{errors.firstName}</p>}
                       </div>
                       <div className="space-y-2">
                         <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Last Name</label>
-                        <input name="last_name" required type="text" value={formData.lastName} onChange={e => handleInputChange('lastName', e.target.value)} className="w-full bg-gray-50 border-2 border-gray-100 focus:border-gray-900 focus:bg-white p-4 rounded-xl outline-none transition-all font-medium text-gray-900" placeholder="Smith" />
+                        <input ref={lastNameRef} name="last_name" required type="text" value={formData.lastName} onChange={e => handleInputChange('lastName', e.target.value)} className={`w-full bg-gray-50 border-2 ${errors.lastName ? 'border-red-300' : 'border-gray-100'} focus:border-gray-900 focus:bg-white p-4 rounded-xl outline-none transition-all font-medium text-gray-900`} placeholder="Smith" />
+                        {errors.lastName && <p className="text-red-500 text-[10px] font-bold mt-1 ml-1">{errors.lastName}</p>}
                       </div>
                       <div className="space-y-2">
                         <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Phone Number</label>
-                        <input name="phone" required type="tel" value={formData.phone} onChange={e => handleInputChange('phone', e.target.value)} className="w-full bg-gray-50 border-2 border-gray-100 focus:border-gray-900 focus:bg-white p-4 rounded-xl outline-none transition-all font-medium text-gray-900" placeholder="(215) 555-0123" />
+                        <input ref={phoneRef} name="phone" required type="tel" value={formData.phone} onChange={e => handleInputChange('phone', e.target.value)} className={`w-full bg-gray-50 border-2 ${errors.phone ? 'border-red-300' : 'border-gray-100'} focus:border-gray-900 focus:bg-white p-4 rounded-xl outline-none transition-all font-medium text-gray-900`} placeholder="(215) 555-0123" />
+                        {errors.phone && <p className="text-red-500 text-[10px] font-bold mt-1 ml-1">{errors.phone}</p>}
                       </div>
                       <div className="space-y-2">
                         <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Email Address</label>
-                        <input name="email" required type="email" value={formData.email} onChange={e => handleInputChange('email', e.target.value)} className="w-full bg-gray-50 border-2 border-gray-100 focus:border-gray-900 focus:bg-white p-4 rounded-xl outline-none transition-all font-medium text-gray-900" placeholder="jane@company.com" />
+                        <input ref={emailRef} name="email" required type="email" value={formData.email} onChange={e => handleInputChange('email', e.target.value)} className={`w-full bg-gray-50 border-2 ${errors.email ? 'border-red-300' : 'border-gray-100'} focus:border-gray-900 focus:bg-white p-4 rounded-xl outline-none transition-all font-medium text-gray-900`} placeholder="jane@company.com" />
+                        {errors.email && <p className="text-red-500 text-[10px] font-bold mt-1 ml-1">{errors.email}</p>}
                       </div>
                     </div>
                   </section>
@@ -245,7 +321,8 @@ const CommercialQuoteModal = () => {
                     <div className="grid md:grid-cols-2 gap-4 md:gap-6">
                       <div className="md:col-span-2 space-y-2">
                         <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Street Address</label>
-                        <input name="street_address" required type="text" value={formData.street} onChange={e => handleInputChange('street', e.target.value)} className="w-full bg-gray-50 border-2 border-gray-100 p-4 rounded-xl outline-none font-medium text-gray-900" placeholder="123 Market St" />
+                        <input ref={streetRef} name="street_address" required type="text" value={formData.street} onChange={e => handleInputChange('street', e.target.value)} className={`w-full bg-gray-50 border-2 ${errors.street ? 'border-red-300' : 'border-gray-100'} p-4 rounded-xl outline-none font-medium text-gray-900`} placeholder="123 Market St" />
+                        {errors.street && <p className="text-red-500 text-[10px] font-bold mt-1 ml-1">{errors.street}</p>}
                       </div>
                       <div className="space-y-2">
                         <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Apt or Suite</label>
@@ -253,15 +330,18 @@ const CommercialQuoteModal = () => {
                       </div>
                       <div className="space-y-2">
                         <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">City</label>
-                        <input name="city" required type="text" value={formData.city} onChange={e => handleInputChange('city', e.target.value)} className="w-full bg-gray-50 border-2 border-gray-100 p-4 rounded-xl outline-none font-medium text-gray-900" placeholder="Philadelphia" />
+                        <input ref={cityRef} name="city" required type="text" value={formData.city} onChange={e => handleInputChange('city', e.target.value)} className={`w-full bg-gray-50 border-2 ${errors.city ? 'border-red-300' : 'border-gray-100'} p-4 rounded-xl outline-none font-medium text-gray-900`} placeholder="Philadelphia" />
+                        {errors.city && <p className="text-red-500 text-[10px] font-bold mt-1 ml-1">{errors.city}</p>}
                       </div>
                       <div className="space-y-2">
                         <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">State</label>
-                        <input name="state" required type="text" value={formData.state} onChange={e => handleInputChange('state', e.target.value)} className="w-full bg-gray-50 border-2 border-gray-100 p-4 rounded-xl outline-none font-medium text-gray-900" placeholder="PA" />
+                        <input ref={stateRef} name="state" required type="text" value={formData.state} onChange={e => handleInputChange('state', e.target.value)} className={`w-full bg-gray-50 border-2 ${errors.state ? 'border-red-300' : 'border-gray-100'} p-4 rounded-xl outline-none font-medium text-gray-900`} placeholder="PA" />
+                        {errors.state && <p className="text-red-500 text-[10px] font-bold mt-1 ml-1">{errors.state}</p>}
                       </div>
                       <div className="space-y-2">
                         <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Zip Code</label>
-                        <input name="zip_code" required type="text" value={formData.zip} onChange={e => handleInputChange('zip', e.target.value)} className="w-full bg-gray-50 border-2 border-gray-100 p-4 rounded-xl outline-none font-medium text-gray-900" placeholder="19106" />
+                        <input ref={zipRef} name="zip_code" required type="text" value={formData.zip} onChange={e => handleInputChange('zip', e.target.value)} className={`w-full bg-gray-50 border-2 ${errors.zip ? 'border-red-300' : 'border-gray-100'} p-4 rounded-xl outline-none font-medium text-gray-900`} placeholder="19106" />
+                        {errors.zip && <p className="text-red-500 text-[10px] font-bold mt-1 ml-1">{errors.zip}</p>}
                       </div>
                     </div>
                   </section>
@@ -318,7 +398,8 @@ const CommercialQuoteModal = () => {
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
                       <div className="space-y-2">
                         <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Approx. Sqft</label>
-                        <input name="sqft" required type="text" value={formData.sqft} onChange={e => handleInputChange('sqft', e.target.value)} className="w-full bg-gray-50 border-2 border-gray-100 p-4 rounded-xl outline-none font-bold text-gray-900" placeholder="2500" />
+                        <input ref={sqftRef} name="sqft" required type="text" value={formData.sqft} onChange={e => handleInputChange('sqft', e.target.value)} className={`w-full bg-gray-50 border-2 ${errors.sqft ? 'border-red-300' : 'border-gray-100'} p-4 rounded-xl outline-none font-bold text-gray-900`} placeholder="2500" />
+                        {errors.sqft && <p className="text-red-500 text-[10px] font-bold mt-1 ml-1">{errors.sqft}</p>}
                       </div>
                       <div className="space-y-2">
                         <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Rooms / Offices</label>
