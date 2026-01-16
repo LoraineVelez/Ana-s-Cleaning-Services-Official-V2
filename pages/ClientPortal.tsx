@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, Phone, Gift, Sparkles, Copy, Check, Star, Heart, ExternalLink, CreditCard, ShieldCheck, Wallet, Smartphone, Loader2, RefreshCw, MessageSquare, Send } from 'lucide-react';
@@ -30,6 +29,7 @@ const ClientPortal = () => {
   const streetRef = useRef<HTMLInputElement>(null);
   const cityRef = useRef<HTMLInputElement>(null);
   const zipRef = useRef<HTMLInputElement>(null);
+  const startDateRef = useRef<HTMLInputElement>(null);
 
   const [formData, setFormData] = useState({
     firstName: '', lastName: '', email: '', phone: '',
@@ -73,21 +73,21 @@ const ClientPortal = () => {
     
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
+      newErrors.email = "Email address is required";
     } else if (!emailRegex.test(formData.email)) {
-      newErrors.email = "Enter a valid email address";
+      newErrors.email = "Email must be in a valid format (e.g. name@domain.com)";
     }
 
     const digits = formData.phone.replace(/\D/g, '');
     if (!formData.phone.trim()) {
-      newErrors.phone = "Phone is required";
+      newErrors.phone = "Phone number is required";
     } else if (digits.length !== 10) {
-      newErrors.phone = "Enter a valid 10-digit US phone number";
+      newErrors.phone = "Phone number must be 10 digits";
     }
 
     if (!formData.street.trim()) newErrors.street = "Street address is required";
     if (!formData.city.trim()) newErrors.city = "City is required";
-    if (!formData.zip.trim() || !/^\d{5}(-\d{4})?$/.test(formData.zip)) newErrors.zip = "Valid 5-digit zip required";
+    if (!formData.zip.trim() || !/^\d{5}(-\d{4})?$/.test(formData.zip)) newErrors.zip = "Zip code must be 5 digits";
     if (!formData.startDate) newErrors.startDate = "Preferred start date is required";
 
     setErrors(newErrors);
@@ -100,6 +100,7 @@ const ClientPortal = () => {
     else if (newErrors.street) streetRef.current?.focus();
     else if (newErrors.city) cityRef.current?.focus();
     else if (newErrors.zip) zipRef.current?.focus();
+    else if (newErrors.startDate) startDateRef.current?.focus();
 
     return Object.keys(newErrors).length === 0;
   };
@@ -113,8 +114,9 @@ const ClientPortal = () => {
     const webhookUrl = "https://hooks.zapier.com/hooks/catch/26066533/ugqpdwr/";
     const formName = 'Schedule Change Request';
     
-    // Normalize phone to E.164
-    const normalizedPhone = `+1${formData.phone.replace(/\D/g, '')}`;
+    // Normalize phone to US E.164: +1XXXXXXXXXX
+    const digits = formData.phone.replace(/\D/g, '');
+    const normalizedPhone = `+1${digits}`;
 
     const payload = {
       'form-name': formName,
@@ -247,47 +249,47 @@ const ClientPortal = () => {
                   <input type="hidden" name="bot-field" value={formData['bot-field']} />
                   
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">First Name</label>
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">First Name <span className="text-red-500">*</span></label>
                     <input ref={firstNameRef} required name="firstName" value={formData.firstName} onChange={handleInputChange} type="text" className={`w-full bg-gray-50/50 p-4 rounded-xl border-2 ${errors.firstName ? 'border-red-300' : 'border-gray-100'} focus:border-[#FF1493] focus:bg-white transition-all outline-none text-gray-900 font-bold placeholder:text-gray-300`} placeholder="Jane" />
-                    {errors.firstName && <p className="text-red-500 text-[10px] font-bold mt-1 ml-1">{errors.firstName}</p>}
+                    {errors.firstName && <p className="text-gray-500 text-[10px] font-bold mt-1 ml-1 italic">{errors.firstName}</p>}
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Last Name</label>
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Last Name <span className="text-red-500">*</span></label>
                     <input ref={lastNameRef} required name="lastName" value={formData.lastName} onChange={handleInputChange} type="text" className={`w-full bg-gray-50/50 p-4 rounded-xl border-2 ${errors.lastName ? 'border-red-300' : 'border-gray-100'} focus:border-[#FF1493] focus:bg-white transition-all outline-none text-gray-900 font-bold placeholder:text-gray-300`} placeholder="Doe" />
-                    {errors.lastName && <p className="text-red-500 text-[10px] font-bold mt-1 ml-1">{errors.lastName}</p>}
+                    {errors.lastName && <p className="text-gray-500 text-[10px] font-bold mt-1 ml-1 italic">{errors.lastName}</p>}
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Email Address</label>
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Email Address <span className="text-red-500">*</span></label>
                     <input ref={emailRef} required name="email" value={formData.email} onChange={handleInputChange} type="email" className={`w-full bg-gray-50/50 p-4 rounded-xl border-2 ${errors.email ? 'border-red-300' : 'border-gray-100'} focus:border-[#FF1493] focus:bg-white transition-all outline-none text-gray-900 font-bold placeholder:text-gray-300`} placeholder="jane@example.com" />
-                    {errors.email && <p className="text-red-500 text-[10px] font-bold mt-1 ml-1">{errors.email}</p>}
+                    {errors.email && <p className="text-gray-500 text-[10px] font-bold mt-1 ml-1 italic">{errors.email}</p>}
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Phone Number</label>
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Phone Number <span className="text-red-500">*</span></label>
                     <input ref={phoneRef} required name="phone" value={formData.phone} onChange={handleInputChange} type="tel" className={`w-full bg-gray-50/50 p-4 rounded-xl border-2 ${errors.phone ? 'border-red-300' : 'border-gray-100'} focus:border-[#FF1493] focus:bg-white transition-all outline-none text-gray-900 font-bold placeholder:text-gray-300`} placeholder="(215) 555-0123" />
-                    {errors.phone && <p className="text-red-500 text-[10px] font-bold mt-1 ml-1">{errors.phone}</p>}
+                    {errors.phone && <p className="text-gray-500 text-[10px] font-bold mt-1 ml-1 italic">{errors.phone}</p>}
                   </div>
                   <div className="sm:col-span-2 space-y-1.5">
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Street Address</label>
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Street Address <span className="text-red-500">*</span></label>
                     <input ref={streetRef} required name="street" value={formData.street} onChange={handleInputChange} type="text" className={`w-full bg-gray-50/50 p-4 rounded-xl border-2 ${errors.street ? 'border-red-300' : 'border-gray-100'} focus:border-[#FF1493] focus:bg-white transition-all outline-none text-gray-900 font-bold placeholder:text-gray-300`} placeholder="123 Philly Lane" />
-                    {errors.street && <p className="text-red-500 text-[10px] font-bold mt-1 ml-1">{errors.street}</p>}
+                    {errors.street && <p className="text-gray-500 text-[10px] font-bold mt-1 ml-1 italic">{errors.street}</p>}
                   </div>
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Apt or Suite</label>
                     <input name="apt" value={formData.apt} onChange={handleInputChange} type="text" className="w-full bg-gray-50/50 p-4 rounded-xl border-2 border-gray-100 focus:border-[#FF1493] focus:bg-white transition-all outline-none text-gray-900 font-bold placeholder:text-gray-300" placeholder="Apt 4B" />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">City</label>
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">City <span className="text-red-500">*</span></label>
                     <input ref={cityRef} required name="city" value={formData.city} onChange={handleInputChange} type="text" className={`w-full bg-gray-50/50 p-4 rounded-xl border-2 ${errors.city ? 'border-red-300' : 'border-gray-100'} focus:border-[#FF1493] focus:bg-white transition-all outline-none text-gray-900 font-bold placeholder:text-gray-300`} placeholder="Philadelphia" />
-                    {errors.city && <p className="text-red-500 text-[10px] font-bold mt-1 ml-1">{errors.city}</p>}
+                    {errors.city && <p className="text-gray-500 text-[10px] font-bold mt-1 ml-1 italic">{errors.city}</p>}
                   </div>
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">State</label>
                     <input required name="state" value={formData.state} onChange={handleInputChange} type="text" className="w-full bg-gray-50/50 p-4 rounded-xl border-2 border-gray-100 focus:border-[#FF1493] focus:bg-white transition-all outline-none text-gray-900 font-bold placeholder:text-gray-300" placeholder="PA" />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Zip Code</label>
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Zip Code <span className="text-red-500">*</span></label>
                     <input ref={zipRef} required name="zip" value={formData.zip} onChange={handleInputChange} type="text" className={`w-full bg-gray-50/50 p-4 rounded-xl border-2 ${errors.zip ? 'border-red-300' : 'border-gray-100'} focus:border-[#FF1493] focus:bg-white transition-all outline-none text-gray-900 font-bold placeholder:text-gray-300`} placeholder="19103" />
-                    {errors.zip && <p className="text-red-500 text-[10px] font-bold mt-1 ml-1">{errors.zip}</p>}
+                    {errors.zip && <p className="text-gray-500 text-[10px] font-bold mt-1 ml-1 italic">{errors.zip}</p>}
                   </div>
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">New Frequency</label>
@@ -299,9 +301,9 @@ const ClientPortal = () => {
                     </select>
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Preferred Start Date</label>
-                    <input required name="startDate" value={formData.startDate} onChange={handleInputChange} type="date" className={`w-full bg-gray-50/50 p-4 rounded-xl border-2 ${errors.startDate ? 'border-red-300' : 'border-gray-100'} focus:border-[#FF1493] focus:bg-white transition-all outline-none text-gray-900 font-black cursor-pointer`} />
-                    {errors.startDate && <p className="text-red-500 text-[10px] font-bold mt-1 ml-1">{errors.startDate}</p>}
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Preferred Start Date <span className="text-red-500">*</span></label>
+                    <input ref={startDateRef} required name="startDate" value={formData.startDate} onChange={handleInputChange} type="date" className={`w-full bg-gray-50/50 p-4 rounded-xl border-2 ${errors.startDate ? 'border-red-300' : 'border-gray-100'} focus:border-[#FF1493] focus:bg-white transition-all outline-none text-gray-900 font-black cursor-pointer`} />
+                    {errors.startDate && <p className="text-gray-500 text-[10px] font-bold mt-1 ml-1 italic">{errors.startDate}</p>}
                   </div>
                   <div className="sm:col-span-2 space-y-1.5">
                     <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Additional Notes</label>

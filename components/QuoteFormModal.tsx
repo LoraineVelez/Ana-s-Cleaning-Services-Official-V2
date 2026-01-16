@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, CheckCircle2, Calendar, User, MapPin, ClipboardList, Clock, Plus, Loader2, Sparkles, Building2 } from 'lucide-react';
@@ -87,20 +86,20 @@ const QuoteFormModal = () => {
     if (!formData.email.trim()) {
       newErrors.email = "Email is required";
     } else if (!emailRegex.test(formData.email)) {
-      newErrors.email = "Please enter a valid email address";
+      newErrors.email = "Email must be in a valid format (e.g. name@domain.com)";
     }
 
     const digits = formData.phone.replace(/\D/g, '');
     if (!formData.phone.trim()) {
-      newErrors.phone = "Phone is required";
+      newErrors.phone = "Phone number is required";
     } else if (digits.length !== 10) {
-      newErrors.phone = "Enter a valid 10-digit US phone number";
+      newErrors.phone = "Phone number must be 10 digits";
     }
 
     if (!formData.street.trim()) newErrors.street = "Street address is required";
     if (!formData.city.trim()) newErrors.city = "City is required";
-    if (!formData.state.trim() || formData.state.length !== 2) newErrors.state = "Valid 2-letter state required";
-    if (!formData.zip.trim() || !/^\d{5}(-\d{4})?$/.test(formData.zip)) newErrors.zip = "Valid 5-digit zip required";
+    if (!formData.state.trim() || formData.state.length !== 2) newErrors.state = "State must be 2 letters (e.g. PA)";
+    if (!formData.zip.trim() || !/^\d{5}(-\d{4})?$/.test(formData.zip)) newErrors.zip = "Zip code must be 5 digits";
 
     setErrors(newErrors);
 
@@ -128,8 +127,9 @@ const QuoteFormModal = () => {
     const refId = generateRefId();
     const today = new Date().toISOString().split('T')[0];
     
-    // Normalize phone to E.164
-    const normalizedPhone = `+1${formData.phone.replace(/\D/g, '')}`;
+    // Normalize phone to US E.164: +1XXXXXXXXXX
+    const digits = formData.phone.replace(/\D/g, '');
+    const normalizedPhone = `+1${digits}`;
 
     const payload = {
       'form-name': formName,
@@ -263,24 +263,24 @@ const QuoteFormModal = () => {
                     </div>
                     <div className="grid md:grid-cols-2 gap-4 md:gap-6">
                       <div className="space-y-2">
-                        <label className="text-xs font-bold text-gray-700 uppercase tracking-wider ml-1">First Name</label>
+                        <label className="text-xs font-bold text-gray-700 uppercase tracking-wider ml-1">First Name <span className="text-red-500">*</span></label>
                         <input ref={firstNameRef} name="first_name" required type="text" value={formData.firstName} onChange={e => handleInputChange('firstName', e.target.value)} className={`w-full bg-gray-50 border-2 ${errors.firstName ? 'border-red-300' : 'border-gray-100'} focus:border-[#FF1493] focus:bg-white p-3.5 md:p-4 rounded-xl md:rounded-2xl outline-none transition-all text-gray-900 text-sm md:text-base font-medium placeholder:text-gray-400`} placeholder="Jane" />
-                        {errors.firstName && <p className="text-red-500 text-[10px] font-bold mt-1 ml-1">{errors.firstName}</p>}
+                        {errors.firstName && <p className="text-gray-500 text-[10px] font-bold mt-1 ml-1 italic">{errors.firstName}</p>}
                       </div>
                       <div className="space-y-2">
-                        <label className="text-xs font-bold text-gray-700 uppercase tracking-wider ml-1">Last Name</label>
+                        <label className="text-xs font-bold text-gray-700 uppercase tracking-wider ml-1">Last Name <span className="text-red-500">*</span></label>
                         <input ref={lastNameRef} name="last_name" required type="text" value={formData.lastName} onChange={e => handleInputChange('lastName', e.target.value)} className={`w-full bg-gray-50 border-2 ${errors.lastName ? 'border-red-300' : 'border-gray-100'} focus:border-[#FF1493] focus:bg-white p-3.5 md:p-4 rounded-xl md:rounded-2xl outline-none transition-all text-gray-900 text-sm md:text-base font-medium placeholder:text-gray-400`} placeholder="Doe" />
-                        {errors.lastName && <p className="text-red-500 text-[10px] font-bold mt-1 ml-1">{errors.lastName}</p>}
+                        {errors.lastName && <p className="text-gray-500 text-[10px] font-bold mt-1 ml-1 italic">{errors.lastName}</p>}
                       </div>
                       <div className="space-y-2">
-                        <label className="text-xs font-bold text-gray-700 uppercase tracking-wider ml-1">Email Address</label>
+                        <label className="text-xs font-bold text-gray-700 uppercase tracking-wider ml-1">Email Address <span className="text-red-500">*</span></label>
                         <input ref={emailRef} name="email" required type="email" value={formData.email} onChange={e => handleInputChange('email', e.target.value)} className={`w-full bg-gray-50 border-2 ${errors.email ? 'border-red-300' : 'border-gray-100'} focus:border-[#FF1493] focus:bg-white p-3.5 md:p-4 rounded-xl md:rounded-2xl outline-none transition-all text-gray-900 text-sm md:text-base font-medium placeholder:text-gray-400`} placeholder="jane@example.com" />
-                        {errors.email && <p className="text-red-500 text-[10px] font-bold mt-1 ml-1">{errors.email}</p>}
+                        {errors.email && <p className="text-gray-500 text-[10px] font-bold mt-1 ml-1 italic">{errors.email}</p>}
                       </div>
                       <div className="space-y-2">
-                        <label className="text-xs font-bold text-gray-700 uppercase tracking-wider ml-1">Phone Number</label>
+                        <label className="text-xs font-bold text-gray-700 uppercase tracking-wider ml-1">Phone Number <span className="text-red-500">*</span></label>
                         <input ref={phoneRef} name="phone" required type="tel" value={formData.phone} onChange={e => handleInputChange('phone', e.target.value)} className={`w-full bg-gray-50 border-2 ${errors.phone ? 'border-red-300' : 'border-gray-100'} focus:border-[#FF1493] focus:bg-white p-3.5 md:p-4 rounded-xl md:rounded-2xl outline-none transition-all text-gray-900 text-sm md:text-base font-medium placeholder:text-gray-400`} placeholder="(215) 555-0123" />
-                        {errors.phone && <p className="text-red-500 text-[10px] font-bold mt-1 ml-1">{errors.phone}</p>}
+                        {errors.phone && <p className="text-gray-500 text-[10px] font-bold mt-1 ml-1 italic">{errors.phone}</p>}
                       </div>
                     </div>
                   </section>
@@ -292,28 +292,28 @@ const QuoteFormModal = () => {
                     </div>
                     <div className="grid md:grid-cols-2 gap-4 md:gap-6">
                       <div className="md:col-span-2 space-y-2">
-                        <label className="text-xs font-bold text-gray-700 uppercase tracking-wider ml-1">Street Address</label>
+                        <label className="text-xs font-bold text-gray-700 uppercase tracking-wider ml-1">Street Address <span className="text-red-500">*</span></label>
                         <input ref={streetRef} name="street_address" required type="text" value={formData.street} onChange={e => handleInputChange('street', e.target.value)} className={`w-full bg-gray-50 border-2 ${errors.street ? 'border-red-300' : 'border-gray-100'} focus:border-[#FF1493] focus:bg-white p-3.5 md:p-4 rounded-xl md:rounded-2xl outline-none transition-all text-gray-900 text-sm md:text-base font-medium placeholder:text-gray-400`} placeholder="123 Philly Lane" />
-                        {errors.street && <p className="text-red-500 text-[10px] font-bold mt-1 ml-1">{errors.street}</p>}
+                        {errors.street && <p className="text-gray-500 text-[10px] font-bold mt-1 ml-1 italic">{errors.street}</p>}
                       </div>
                       <div className="space-y-2">
                         <label className="text-xs font-bold text-gray-700 uppercase tracking-wider ml-1">Apt or Suite</label>
                         <input name="apt_suite" type="text" value={formData.apt} onChange={e => handleInputChange('apt', e.target.value)} className="w-full bg-gray-50 border-2 border-gray-100 focus:border-[#FF1493] focus:bg-white p-3.5 md:p-4 rounded-xl md:rounded-2xl outline-none transition-all text-gray-900 text-sm md:text-base font-medium placeholder:text-gray-400" placeholder="Apt 4B" />
                       </div>
                       <div className="space-y-2">
-                        <label className="text-xs font-bold text-gray-700 uppercase tracking-wider ml-1">City</label>
+                        <label className="text-xs font-bold text-gray-700 uppercase tracking-wider ml-1">City <span className="text-red-500">*</span></label>
                         <input ref={cityRef} name="city" required type="text" value={formData.city} onChange={e => handleInputChange('city', e.target.value)} className={`w-full bg-gray-50 border-2 ${errors.city ? 'border-red-300' : 'border-gray-100'} focus:border-[#FF1493] focus:bg-white p-3.5 md:p-4 rounded-xl md:rounded-2xl outline-none transition-all text-gray-900 text-sm md:text-base font-medium placeholder:text-gray-400`} placeholder="Philadelphia" />
-                        {errors.city && <p className="text-red-500 text-[10px] font-bold mt-1 ml-1">{errors.city}</p>}
+                        {errors.city && <p className="text-gray-500 text-[10px] font-bold mt-1 ml-1 italic">{errors.city}</p>}
                       </div>
                       <div className="space-y-2">
-                        <label className="text-xs font-bold text-gray-700 uppercase tracking-wider ml-1">State</label>
+                        <label className="text-xs font-bold text-gray-700 uppercase tracking-wider ml-1">State <span className="text-red-500">*</span></label>
                         <input ref={stateRef} name="state" required type="text" value={formData.state} onChange={e => handleInputChange('state', e.target.value)} className={`w-full bg-gray-50 border-2 ${errors.state ? 'border-red-300' : 'border-gray-100'} focus:border-[#FF1493] focus:bg-white p-3.5 md:p-4 rounded-xl md:rounded-2xl outline-none transition-all text-gray-900 text-sm md:text-base font-medium placeholder:text-gray-400`} placeholder="PA" />
-                        {errors.state && <p className="text-red-500 text-[10px] font-bold mt-1 ml-1">{errors.state}</p>}
+                        {errors.state && <p className="text-gray-500 text-[10px] font-bold mt-1 ml-1 italic">{errors.state}</p>}
                       </div>
                       <div className="space-y-2">
-                        <label className="text-xs font-bold text-gray-700 uppercase tracking-wider ml-1">Zip Code</label>
+                        <label className="text-xs font-bold text-gray-700 uppercase tracking-wider ml-1">Zip Code <span className="text-red-500">*</span></label>
                         <input ref={zipRef} name="zip_code" required type="text" value={formData.zip} onChange={e => handleInputChange('zip', e.target.value)} className={`w-full bg-gray-50 border-2 ${errors.zip ? 'border-red-300' : 'border-gray-100'} focus:border-[#FF1493] focus:bg-white p-3.5 md:p-4 rounded-xl md:rounded-2xl outline-none transition-all text-gray-900 text-sm md:text-base font-medium placeholder:text-gray-400`} placeholder="19103" />
-                        {errors.zip && <p className="text-red-500 text-[10px] font-bold mt-1 ml-1">{errors.zip}</p>}
+                        {errors.zip && <p className="text-gray-500 text-[10px] font-bold mt-1 ml-1 italic">{errors.zip}</p>}
                       </div>
                     </div>
                   </section>
