@@ -1,7 +1,6 @@
-
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, CheckCircle2, Building2, User, MapPin, ClipboardList, Clock, Loader2, Sparkles, Calendar, Phone, Mail } from 'lucide-react';
+import { X, CheckCircle2, Building2, User, MapPin, ClipboardList, Clock, Loader2, Sparkles, Calendar, Phone, Mail, Key } from 'lucide-react';
 import { useQuoteForm } from '../context/QuoteContext';
 import { useTranslation } from '../context/LanguageContext';
 
@@ -434,8 +433,25 @@ const CommercialQuoteModal = () => {
                     <input type="hidden" name="frequency" value={formData.frequency} />
                   </section>
 
+                  {/* Section: Access Info */}
+                  <section className="space-y-6">
+                    <div className="flex items-center gap-3 pb-2 border-b border-gray-100">
+                      <Key className="text-[#FF1493]" size={18} />
+                      <h3 className="font-black text-gray-900 uppercase tracking-widest text-xs">Access Information</h3>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Entry Instructions / Access Notes</label>
+                      <textarea name="accessInfo" value={formData.accessInfo} onChange={e => handleInputChange('accessInfo', e.target.value)} rows={3} className="w-full bg-gray-50 border-2 border-gray-100 focus:border-gray-900 focus:bg-white p-4 rounded-xl outline-none resize-none font-medium text-gray-900" placeholder="e.g. Door code is 1234, or pick up key from front desk..."></textarea>
+                    </div>
+                  </section>
+
                   <section className="space-y-8 pt-6">
                     <div className="space-y-4">
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Additional Notes</label>
+                        <textarea name="additionalNotes" value={formData.additionalNotes} onChange={e => handleInputChange('additionalNotes', e.target.value)} rows={2} className="w-full bg-gray-50 border-2 border-gray-100 focus:border-gray-900 focus:bg-white p-4 rounded-xl outline-none resize-none font-medium text-gray-900" placeholder="Anything else we should know?"></textarea>
+                      </div>
+
                       <label className="flex items-start gap-4 cursor-pointer group bg-pink-50/30 p-4 rounded-2xl border border-pink-100/50">
                         <input 
                           name="notifications_opt_in"
