@@ -22,7 +22,8 @@ const ClientPortal = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [formData, setFormData] = useState({
-    name: '', email: '', phone: '', address: '',
+    firstName: '', lastName: '', email: '', phone: '',
+    street: '', apt: '', city: '', state: 'PA', zip: '',
     currentFrequency: 'Bi-weekly',
     requestedFrequency: 'Bi-weekly',
     startDate: '',
@@ -56,7 +57,20 @@ const ClientPortal = () => {
     
     const payload = {
       'form-name': formName,
-      ...formData
+      'bot-field': formData['bot-field'],
+      first_name: formData.firstName,
+      last_name: formData.lastName,
+      email: formData.email,
+      phone: formData.phone,
+      street_address: formData.street,
+      apt_suite: formData.apt,
+      city: formData.city,
+      state: formData.state,
+      zip_code: formData.zip,
+      currentFrequency: formData.currentFrequency,
+      requestedFrequency: formData.requestedFrequency,
+      startDate: formData.startDate,
+      notes: formData.notes
     };
 
     try {
@@ -168,19 +182,47 @@ const ClientPortal = () => {
                   className="grid sm:grid-cols-2 gap-4 md:gap-6 lg:gap-8"
                 >
                   <input type="hidden" name="form-name" value="Schedule Change Request" />
-                  <input type="hidden" name="bot-field" value={formData['bot-field']} onChange={handleInputChange} />
+                  <input type="hidden" name="bot-field" value={formData['bot-field']} />
                   
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Full Name</label>
-                    <input required name="name" value={formData.name} onChange={handleInputChange} type="text" className="w-full bg-gray-50/50 p-4 md:p-5 rounded-xl md:rounded-2xl border-2 border-gray-100 focus:border-[#FF1493] focus:bg-white transition-all outline-none text-gray-900 font-bold placeholder:text-gray-300" placeholder="Jane Doe" />
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">First Name</label>
+                    <input required name="firstName" value={formData.firstName} onChange={handleInputChange} type="text" className="w-full bg-gray-50/50 p-4 rounded-xl border-2 border-gray-100 focus:border-[#FF1493] focus:bg-white transition-all outline-none text-gray-900 font-bold placeholder:text-gray-300" placeholder="Jane" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Last Name</label>
+                    <input required name="lastName" value={formData.lastName} onChange={handleInputChange} type="text" className="w-full bg-gray-50/50 p-4 rounded-xl border-2 border-gray-100 focus:border-[#FF1493] focus:bg-white transition-all outline-none text-gray-900 font-bold placeholder:text-gray-300" placeholder="Doe" />
                   </div>
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Email Address</label>
-                    <input required name="email" value={formData.email} onChange={handleInputChange} type="email" className="w-full bg-gray-50/50 p-4 md:p-5 rounded-xl md:rounded-2xl border-2 border-gray-100 focus:border-[#FF1493] focus:bg-white transition-all outline-none text-gray-900 font-bold placeholder:text-gray-300" placeholder="jane@example.com" />
+                    <input required name="email" value={formData.email} onChange={handleInputChange} type="email" className="w-full bg-gray-50/50 p-4 rounded-xl border-2 border-gray-100 focus:border-[#FF1493] focus:bg-white transition-all outline-none text-gray-900 font-bold placeholder:text-gray-300" placeholder="jane@example.com" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Phone Number</label>
+                    <input required name="phone" value={formData.phone} onChange={handleInputChange} type="tel" className="w-full bg-gray-50/50 p-4 rounded-xl border-2 border-gray-100 focus:border-[#FF1493] focus:bg-white transition-all outline-none text-gray-900 font-bold placeholder:text-gray-300" placeholder="(215) 555-0123" />
+                  </div>
+                  <div className="sm:col-span-2 space-y-1.5">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Street Address</label>
+                    <input required name="street" value={formData.street} onChange={handleInputChange} type="text" className="w-full bg-gray-50/50 p-4 rounded-xl border-2 border-gray-100 focus:border-[#FF1493] focus:bg-white transition-all outline-none text-gray-900 font-bold placeholder:text-gray-300" placeholder="123 Philly Lane" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Apt or Suite</label>
+                    <input name="apt" value={formData.apt} onChange={handleInputChange} type="text" className="w-full bg-gray-50/50 p-4 rounded-xl border-2 border-gray-100 focus:border-[#FF1493] focus:bg-white transition-all outline-none text-gray-900 font-bold placeholder:text-gray-300" placeholder="Apt 4B" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">City</label>
+                    <input required name="city" value={formData.city} onChange={handleInputChange} type="text" className="w-full bg-gray-50/50 p-4 rounded-xl border-2 border-gray-100 focus:border-[#FF1493] focus:bg-white transition-all outline-none text-gray-900 font-bold placeholder:text-gray-300" placeholder="Philadelphia" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">State</label>
+                    <input required name="state" value={formData.state} onChange={handleInputChange} type="text" className="w-full bg-gray-50/50 p-4 rounded-xl border-2 border-gray-100 focus:border-[#FF1493] focus:bg-white transition-all outline-none text-gray-900 font-bold placeholder:text-gray-300" placeholder="PA" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Zip Code</label>
+                    <input required name="zip" value={formData.zip} onChange={handleInputChange} type="text" className="w-full bg-gray-50/50 p-4 rounded-xl border-2 border-gray-100 focus:border-[#FF1493] focus:bg-white transition-all outline-none text-gray-900 font-bold placeholder:text-gray-300" placeholder="19103" />
                   </div>
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">New Frequency</label>
-                    <select name="requestedFrequency" value={formData.requestedFrequency} onChange={handleInputChange} className="w-full bg-gray-50/50 p-4 md:p-5 rounded-xl md:rounded-2xl border-2 border-gray-100 focus:border-[#FF1493] focus:bg-white transition-all outline-none text-gray-900 font-black cursor-pointer appearance-none">
+                    <select name="requestedFrequency" value={formData.requestedFrequency} onChange={handleInputChange} className="w-full bg-gray-50/50 p-4 rounded-xl border-2 border-gray-100 focus:border-[#FF1493] focus:bg-white transition-all outline-none text-gray-900 font-black cursor-pointer appearance-none">
                       <option>Weekly</option>
                       <option>Bi-weekly</option>
                       <option>Monthly</option>
@@ -189,11 +231,11 @@ const ClientPortal = () => {
                   </div>
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Preferred Start Date</label>
-                    <input required name="startDate" value={formData.startDate} onChange={handleInputChange} type="date" className="w-full bg-gray-50/50 p-4 md:p-5 rounded-xl md:rounded-2xl border-2 border-gray-100 focus:border-[#FF1493] focus:bg-white transition-all outline-none text-gray-900 font-black cursor-pointer" />
+                    <input required name="startDate" value={formData.startDate} onChange={handleInputChange} type="date" className="w-full bg-gray-50/50 p-4 rounded-xl border-2 border-gray-100 focus:border-[#FF1493] focus:bg-white transition-all outline-none text-gray-900 font-black cursor-pointer" />
                   </div>
                   <div className="sm:col-span-2 space-y-1.5">
                     <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Additional Notes</label>
-                    <textarea name="notes" value={formData.notes} onChange={handleInputChange} rows={3} className="w-full bg-gray-50/50 p-4 md:p-5 rounded-xl md:rounded-2xl border-2 border-gray-100 focus:border-[#FF1493] focus:bg-white transition-all outline-none resize-none text-gray-900 font-medium placeholder:text-gray-300" placeholder="Tell us about the change..."></textarea>
+                    <textarea name="notes" value={formData.notes} onChange={handleInputChange} rows={3} className="w-full bg-gray-50/50 p-4 rounded-xl border-2 border-gray-100 focus:border-[#FF1493] focus:bg-white transition-all outline-none resize-none text-gray-900 font-medium placeholder:text-gray-300" placeholder="Tell us about the change..."></textarea>
                   </div>
                   <div className="sm:col-span-2 pt-4">
                     <button type="submit" disabled={isSubmitting} className="w-full bg-[#FF1493] text-white py-5 md:py-6 lg:py-8 rounded-2xl md:rounded-3xl font-black text-lg md:text-xl shadow-2xl shadow-pink-200 hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-3 disabled:opacity-70">
@@ -217,7 +259,7 @@ const ClientPortal = () => {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="bg-white p-6 md:p-10 lg:p-16 rounded-[2.5rem] md:rounded-[3.5rem] lg:rounded-[5rem] shadow-xl shadow-gray-200/50 border border-gray-100"
+              className="bg-white p-6 md:p-10 lg:p-12 rounded-[2.5rem] md:rounded-[3.5rem] lg:rounded-[5rem] shadow-xl shadow-gray-200/50 border border-gray-100"
             >
               <div className="flex items-center gap-4 md:gap-5 mb-8 md:mb-12">
                 <div className="w-12 h-12 md:w-14 md:h-14 bg-pink-50 rounded-xl md:rounded-2xl flex items-center justify-center text-[#FF1493] border border-pink-100 shadow-sm">
@@ -227,11 +269,11 @@ const ClientPortal = () => {
               </div>
               
               {/* Preferred: Square Invoices Card */}
-              <div className="bg-gradient-to-br from-white to-pink-50/40 p-8 md:p-12 lg:p-16 rounded-[2.5rem] md:rounded-[3.5rem] border-2 border-pink-100 shadow-sm mb-8 md:mb-12 relative overflow-hidden group">
+              <div className="bg-gradient-to-br from-white to-pink-50/40 p-6 md:p-10 xl:p-14 rounded-[2.5rem] md:rounded-[3.5rem] border-2 border-pink-100 shadow-sm mb-8 md:mb-12 relative overflow-hidden group">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-pink-200/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 group-hover:scale-125 transition-transform duration-1000"></div>
                 
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 md:gap-12 relative z-10">
-                  <div className="space-y-4 md:space-y-6">
+                <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-8 md:gap-10 relative z-10">
+                  <div className="space-y-4 md:space-y-6 flex-1">
                     <div className="flex items-center gap-2 md:gap-3">
                       <div className="bg-[#FF1493] text-white p-1 rounded-md">
                         <ShieldCheck size={16} className="md:w-5 md:h-5" />
@@ -239,12 +281,12 @@ const ClientPortal = () => {
                       <span className="text-[#FF1493] font-black uppercase tracking-[0.2em] text-[10px] md:text-xs">{t('portal.payment.preferred', 'Preferred Method')}</span>
                     </div>
                     <h3 className="text-3xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-none">{t('portal.payment.invoice', 'Email Invoices')}</h3>
-                    <p className="text-gray-600 text-base md:text-lg lg:text-xl font-bold leading-relaxed max-w-md">
+                    <p className="text-gray-600 text-base md:text-lg lg:text-xl font-bold leading-relaxed max-w-xl">
                       {t('portal.payment.invoice_desc', 'Invoices sent to your email are our preferred payment method.')}
                     </p>
                   </div>
-                  <div className="shrink-0 w-full md:w-auto">
-                    <a href={SQUARE_PAYMENT_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 md:gap-4 bg-[#FF1493] text-white px-6 md:px-10 lg:px-12 py-5 md:py-6 lg:py-7 rounded-xl md:rounded-[2.5rem] font-black text-base md:text-xl lg:text-2xl hover:scale-105 active:scale-95 transition-all shadow-xl shadow-pink-100 w-full md:w-auto whitespace-nowrap">
+                  <div className="shrink-0 w-full xl:w-auto">
+                    <a href={SQUARE_PAYMENT_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 md:gap-4 bg-[#FF1493] text-white px-5 md:px-6 lg:px-8 xl:px-12 py-5 md:py-6 lg:py-7 rounded-xl md:rounded-[2.5rem] font-black text-base md:text-lg lg:text-xl xl:text-2xl hover:scale-105 active:scale-95 transition-all shadow-xl shadow-pink-100 w-full xl:w-auto text-center">
                       {t('portal.payment.cta', 'Pay Your Invoice')} <ExternalLink size={20} className="md:w-6 md:h-6" />
                     </a>
                   </div>

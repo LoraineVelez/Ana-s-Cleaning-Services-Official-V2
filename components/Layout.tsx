@@ -1,7 +1,6 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Phone, Menu, X, Instagram, Facebook, MessageCircle, Globe, Languages } from 'lucide-react';
+import { Phone, Menu, X, Instagram, Facebook, MessageCircle, Globe, Languages, Copy, Check, ExternalLink } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQuoteForm } from '../context/QuoteContext';
 import { useTranslation } from '../context/LanguageContext';
@@ -152,7 +151,16 @@ const Header = () => {
 
 const Footer = () => {
   const { language, setLanguage, t } = useTranslation();
+  const [showPhonePopup, setShowPhonePopup] = useState(false);
+  const [copied, setCopied] = useState(false);
   const logoSrc = "https://i.ibb.co/FbY9Gvyn/Untitled-design-8.png";
+  const PHONE_NUMBER = "(267) 854-9564";
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(PHONE_NUMBER);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   return (
     <footer className="bg-white pt-16 md:pt-20 pb-10 border-t border-gray-100">
@@ -170,7 +178,6 @@ const Footer = () => {
                 <Globe size={12} /> Se Habla Español
               </div>
               
-              {/* Language Toggle */}
               <div className="inline-flex items-center bg-gray-50 p-1 rounded-xl border border-gray-100 shadow-inner">
                 <button 
                   onClick={() => setLanguage('en')}
@@ -199,14 +206,22 @@ const Footer = () => {
               <li><Link to="/about" className="hover:text-[#FF1493] transition-colors">{t('nav.about', 'About')}</Link></li>
               <li><Link to="/testimonials" className="hover:text-[#FF1493] transition-colors">{t('nav.testimonials', 'Reviews')}</Link></li>
               <li><Link to="/portal" className="hover:text-[#FF1493] transition-colors">{t('nav.portal', 'Client Center')}</Link></li>
+              <li><Link to="/faq" className="hover:text-[#FF1493] transition-colors">FAQ</Link></li>
             </ul>
           </div>
 
           <div className="text-center md:text-left">
             <h4 className="font-bold text-gray-900 mb-6 uppercase tracking-widest text-xs">{t('footer.contact', 'Contact')}</h4>
             <ul className="flex flex-col gap-4 text-sm text-gray-600 font-medium">
-              <li><a href="tel:267-854-9564" className="hover:text-[#FF1493] transition-colors">(267) 854-9564</a></li>
-              <li><a href="mailto:anascleaningservicesphl@gmail.com" className="hover:text-[#FF1493] transition-colors">anascleaningservicesphl@gmail.com</a></li>
+              <li>
+                <button 
+                  onClick={() => setShowPhonePopup(true)}
+                  className="hover:text-[#FF1493] transition-colors text-left"
+                >
+                  Call or Text Us
+                </button>
+              </li>
+              <li><a href="mailto:anascleaningservicesphl@gmail.com" className="hover:text-[#FF1493] transition-colors">Email</a></li>
               <li>Philadelphia, PA</li>
             </ul>
           </div>
@@ -224,13 +239,85 @@ const Footer = () => {
           </div>
         </div>
         <div className="pt-8 border-t border-gray-50 flex flex-col md:flex-row justify-between items-center gap-6">
-          <p className="text-[10px] md:text-xs text-gray-400 font-bold text-center md:text-left uppercase tracking-widest">© 2024 Ana Rose Cleaning Co. {t('footer.built', 'Built for Philly')}.</p>
+          <div className="text-[8.5px] sm:text-[10px] md:text-xs text-gray-400 font-bold text-center md:text-left uppercase tracking-tighter sm:tracking-widest leading-normal">
+            <span className="md:inline block whitespace-nowrap">© 2026 Ana’s Cleaning Services. Built for Philly.</span>
+            <span className="hidden md:inline mx-2">|</span>
+            <span className="md:inline block whitespace-nowrap mt-0.5 md:mt-0">
+              Made with ♡ by <a href="https://www.lorainevelez.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#FF1493] transition-colors">Loraine Velez</a>. All rights reserved.
+            </span>
+          </div>
           <div className="flex gap-6 text-[10px] uppercase tracking-widest font-bold text-gray-400">
             <Link to="/terms" className="hover:text-gray-900">{t('footer.terms', 'Terms')}</Link>
             <Link to="/privacy" className="hover:text-gray-900">{t('footer.privacy', 'Privacy')}</Link>
           </div>
         </div>
       </div>
+
+      <AnimatePresence>
+        {showPhonePopup && (
+          <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowPhonePopup(false)}
+              className="absolute inset-0 bg-gray-900/40 backdrop-blur-sm"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative bg-white rounded-[2.5rem] p-8 md:p-12 shadow-2xl max-w-sm w-full text-center space-y-8"
+            >
+              <button 
+                onClick={() => setShowPhonePopup(false)}
+                className="absolute top-6 right-6 p-2 text-gray-400 hover:text-gray-900 transition-colors"
+              >
+                <X size={20} />
+              </button>
+
+              <div className="w-16 h-16 bg-pink-50 rounded-2xl flex items-center justify-center text-[#FF1493] mx-auto mb-2">
+                <Phone size={28} />
+              </div>
+
+              <div className="space-y-2">
+                <h3 className="text-xl md:text-2xl font-bold text-gray-900">Reach Out to Ana</h3>
+                <p className="text-gray-500 text-sm font-medium">We're just a call or text away!</p>
+              </div>
+
+              <div className="bg-gray-50 p-4 rounded-2xl border-2 border-gray-100 flex items-center justify-between group">
+                <span className="text-xl font-black text-gray-900 tracking-tight">{PHONE_NUMBER}</span>
+                <button 
+                  onClick={handleCopy}
+                  className="p-2 text-[#FF1493] hover:bg-white rounded-xl transition-all shadow-sm"
+                  title="Copy to clipboard"
+                >
+                  {copied ? <Check size={20} className="text-green-500" /> : <Copy size={20} />}
+                </button>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <a 
+                  href={`tel:${PHONE_NUMBER.replace(/\D/g,'')}`}
+                  className="flex items-center justify-center gap-2 bg-[#FF1493] text-white py-4 rounded-2xl font-black text-sm shadow-xl shadow-pink-100 hover:scale-105 active:scale-95 transition-all"
+                >
+                  <Phone size={16} /> Call
+                </a>
+                <a 
+                  href={`sms:${PHONE_NUMBER.replace(/\D/g,'')}`}
+                  className="flex items-center justify-center gap-2 bg-gray-900 text-white py-4 rounded-2xl font-black text-sm shadow-xl hover:scale-105 active:scale-95 transition-all"
+                >
+                  <MessageCircle size={16} /> Text
+                </a>
+              </div>
+              
+              <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">
+                Serving Philadelphia Since 2020
+              </p>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </footer>
   );
 };
