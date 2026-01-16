@@ -41,6 +41,77 @@
 </head>
   <body>
     <div id="root"></div>
+
+    <!-- Hidden forms for Netlify detection -->
+    <div style="display: none;">
+      <!-- Schedule Change Request -->
+      <form name="Schedule Change Request" data-netlify="true" data-netlify-honeypot="bot-field" method="POST">
+        <input type="hidden" name="form-name" value="Schedule Change Request" />
+        <input name="bot-field" />
+        <input name="name" />
+        <input name="email" />
+        <input name="phone" />
+        <input name="address" />
+        <input name="currentFrequency" />
+        <input name="requestedFrequency" />
+        <input name="startDate" />
+        <textarea name="notes"></textarea>
+      </form>
+
+      <!-- Residential Quote Request -->
+      <form name="Residential Quote Request" data-netlify="true" data-netlify-honeypot="bot-field" method="POST">
+        <input type="hidden" name="form-name" value="Residential Quote Request" />
+        <input name="bot-field" />
+        <input name="full_name" />
+        <input name="email" />
+        <input name="phone" />
+        <input name="address" />
+        <input name="city" />
+        <input name="zip" />
+        <input name="home_access_notes" />
+        <input name="service_type" />
+        <input name="bedrooms" />
+        <input name="bathrooms" />
+        <input name="square_footage" />
+        <input name="occupied" />
+        <input name="pets" />
+        <input name="preferred_date" />
+        <input name="time_window" />
+        <input name="add_ons" />
+        <input name="frequency" />
+        <textarea name="additional_notes"></textarea>
+      </form>
+
+      <!-- Commercial Quote Request -->
+      <form name="Commercial Quote Request" data-netlify="true" data-netlify-honeypot="bot-field" method="POST">
+        <input type="hidden" name="form-name" value="Commercial Quote Request" />
+        <input name="bot-field" />
+        <input name="businessName" />
+        <input name="contactName" />
+        <input name="phone" />
+        <input name="email" />
+        <input name="address" />
+        <input name="businessType" />
+        <input name="otherBusinessType" />
+        <input name="isOccupied" />
+        <input name="sqft" />
+        <input name="numRooms" />
+        <input name="numBathrooms" />
+        <input name="numFloors" />
+        <input name="services" />
+        <textarea name="serviceDescription"></textarea>
+        <input name="preferredDays" />
+        <input name="preferredTime" />
+        <input name="afterHoursAllowed" />
+        <input name="startTimeWindow" />
+        <input name="frequency" />
+        <textarea name="accessInfo"></textarea>
+        <textarea name="additionalNotes"></textarea>
+        <input name="followUpPreference" />
+        <input name="acknowledgment" type="checkbox" />
+      </form>
+    </div>
+
     <script type="module" src="/index.tsx"></script>
   </body>
 </html>

@@ -4,12 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, CheckCircle2, Calendar, User, MapPin, ClipboardList, Clock, Plus, Loader2, Sparkles } from 'lucide-react';
 import { useQuoteForm } from '../context/QuoteContext';
 
-const ADDITIONAL_SERVICES_OPTIONS = [
-  "Inside oven cleaning", "Inside fridge cleaning", "Laundry wash and fold", 
-  "Dishes", "Interior windows", "Baseboards", "Pet hair add on", 
-  "Extra bedroom", "Extra bathroom", "Organization or light decluttering"
-];
-
 const encode = (data: any) => {
   return Object.keys(data)
     .map(key => encodeURIComponent(key) + "=" + encodeURIComponent(data[key]))
@@ -34,7 +28,6 @@ const QuoteFormModal = () => {
     'bot-field': ''
   });
 
-  // Stabilize the minimum date calculation (Today + 4 days)
   const minDateString = useMemo(() => {
     const today = new Date();
     const minDate = new Date(today);
@@ -42,7 +35,6 @@ const QuoteFormModal = () => {
     return minDate.toISOString().split('T')[0];
   }, []);
 
-  // Format min date for display hint
   const displayMinDate = useMemo(() => {
     const d = new Date(minDateString);
     return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
@@ -66,9 +58,10 @@ const QuoteFormModal = () => {
     setIsSubmitting(true);
     
     const webhookUrl = "https://hooks.zapier.com/hooks/catch/26066533/ugqpdwr/";
+    const formName = 'Residential Quote Request';
     
     const payload = {
-      'form-name': 'Residential Quote Request',
+      'form-name': formName,
       'bot-field': formData['bot-field'],
       full_name: formData.fullName,
       email: formData.email,
@@ -91,14 +84,12 @@ const QuoteFormModal = () => {
     };
 
     try {
-      // Netlify Form Submission
       await fetch("/", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: encode(payload)
       });
 
-      // Existing Zapier Webhook
       await fetch(webhookUrl, {
         method: 'POST',
         body: JSON.stringify(payload),
@@ -111,15 +102,6 @@ const QuoteFormModal = () => {
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const toggleService = (service: string) => {
-    setFormData(prev => ({
-      ...prev,
-      additionalServices: prev.additionalServices.includes(service)
-        ? prev.additionalServices.filter(s => s !== service)
-        : [...prev.additionalServices, service]
-    }));
   };
 
   if (!isQuoteFormOpen) return null;
@@ -187,9 +169,7 @@ const QuoteFormModal = () => {
                 className="space-y-10 md:space-y-12"
               >
                 <input type="hidden" name="form-name" value="Residential Quote Request" />
-                <p className="hidden">
-                  <label>Don’t fill this out if you’re human: <input name="bot-field" onChange={e => handleInputChange('bot-field', e.target.value)} /></label>
-                </p>
+                <input type="hidden" name="bot-field" value={formData['bot-field']} onChange={e => handleInputChange('bot-field', e.target.value)} />
 
                 <section className="space-y-4 md:space-y-6">
                   <div className="flex items-center gap-3 pb-2 border-b border-gray-100">
@@ -310,7 +290,7 @@ const QuoteFormModal = () => {
                     <div className="space-y-3 md:col-span-2">
                       <label className="text-xs font-bold text-gray-700 uppercase tracking-wider ml-1">Frequency</label>
                       <div className="grid grid-cols-2 gap-2.5 md:gap-3">
-                        {['One time', 'Weekly', 'Biweekly', 'Monthly'].map(freq => (
+                        {['One time cleaning', 'Weekly', 'Biweekly', 'Monthly'].map(freq => (
                           <button 
                             key={freq} type="button" 
                             onClick={() => handleInputChange('frequency', freq)}

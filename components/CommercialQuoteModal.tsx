@@ -78,9 +78,10 @@ const CommercialQuoteModal = () => {
     setIsSubmitting(true);
     
     const webhookUrl = "https://hooks.zapier.com/hooks/catch/26066533/ugqpdwr/";
+    const formName = 'Commercial Quote Request';
     
     const payload = {
-      'form-name': 'Commercial Quote Request',
+      'form-name': formName,
       'bot-field': formData['bot-field'],
       ...formData,
       services: formData.services.join(', '),
@@ -88,14 +89,12 @@ const CommercialQuoteModal = () => {
     };
 
     try {
-      // Netlify Form Submission
       await fetch("/", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: encode(payload)
       });
 
-      // Existing Zapier Webhook
       await fetch(webhookUrl, {
         method: 'POST',
         body: JSON.stringify(payload),
@@ -165,9 +164,7 @@ const CommercialQuoteModal = () => {
                 className="space-y-12"
               >
                 <input type="hidden" name="form-name" value="Commercial Quote Request" />
-                <p className="hidden">
-                  <label>Don’t fill this out if you’re human: <input name="bot-field" onChange={e => handleInputChange('bot-field', e.target.value)} /></label>
-                </p>
+                <input type="hidden" name="bot-field" value={formData['bot-field']} onChange={e => handleInputChange('bot-field', e.target.value)} />
 
                 {/* Section: Business Info */}
                 <section className="space-y-6">
