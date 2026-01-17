@@ -172,14 +172,74 @@ export const STAR_REVIEWS = [
 
 export const FAQ_DATA = [
   {
-    category: "Cleaning Services",
-    category_es: "Servicios de Limpieza",
+    category: "General Information",
+    category_es: "Información General",
     items: [
+      {
+        q: "What areas of Philadelphia do you serve?",
+        q_es: "¿Qué áreas de Filadelfia sirven?",
+        a: "We proudly serve Center City, South Philly, Fishtown, Northern Liberties, University City, and parts of the Main Line. If you're unsure if we cover your zip code, just reach out!",
+        a_es: "Servimos con orgullo Center City, South Philly, Fishtown, Northern Liberties, University City y partes de Main Line. Si no está seguro de si cubrimos su código postal, ¡contáctenos!"
+      },
+      {
+        q: "Are you insured and bonded?",
+        q_es: "¿Están asegurados y bajo fianza?",
+        a: "Yes! Ana Rose Cleaning Co is fully insured and bonded. We take the safety and security of your home and our team very seriously.",
+        a_es: "¡Sí! Ana Rose Cleaning Co está totalmente asegurada y bajo fianza. Nos tomamos muy en serio la seguridad de su hogar y de nuestro equipo."
+      },
+      {
+        q: "Are your cleaners background checked?",
+        q_es: "¿Su personal pasa una verificación de antecedentes?",
+        a: "Absolutely. Every member of our team undergoes a rigorous background check and training period to ensure they meet the 'Ana Standard'.",
+        a_es: "Absolutamente. Cada miembro de nuestro equipo se somete a una rigurosa verificación de antecedentes y un período de capacitación para asegurar que cumplan con el 'Estándar Ana'."
+      }
+    ]
+  },
+  {
+    category: "Cleaning Logistics",
+    category_es: "Logística de Limpieza",
+    items: [
+      {
+        q: "Do I need to provide cleaning supplies?",
+        q_es: "¿Debo proporcionar los suministros de limpieza?",
+        a: "No need! We bring all our own professional-grade, eco-friendly supplies and equipment. If you have a specific product you prefer we use for certain surfaces, please let us know in advance.",
+        a_es: "¡No es necesario! Traemos todos nuestros propios suministros y equipos ecológicos de grado profesional. Si tiene un producto específico que prefiere que usemos para ciertas superficies, infórmenos con anticipación."
+      },
+      {
+        q: "Do I need to be home during the cleaning?",
+        q_es: "¿Debo estar en casa durante la limpieza?",
+        a: "Many of our clients are not home during their cleaning. You can provide a key, a door code, or leave a key with a concierge. We handle your access information with the utmost security.",
+        a_es: "Muchos de nuestros clientes no están en casa durante la limpieza. Puede proporcionar una llave, un código de puerta o dejar una llave con un conserje. Manejamos su información de acceso con la máxima seguridad."
+      },
+      {
+        q: "What should I do with my pets?",
+        q_es: "¿Qué debo hacer con mis mascotas?",
+        a: "We love pets! However, for the safety of your furry friends and our team, we ask that aggressive or highly anxious pets be secured in a crate or a separate room during the service.",
+        a_es: "¡Amamos a las mascotas! Sin embargo, por la seguridad de sus amigos peludos y de nuestro equipo, pedimos que las mascotas agresivas o muy ansiosas sean aseguradas en una jaula o en una habitación separada durante el servicio."
+      }
+    ]
+  },
+  {
+    category: "Booking & Policies",
+    category_es: "Reservas y Políticas",
+    items: [
+      {
+        q: "What is your cancellation policy?",
+        q_es: "¿Cuál es su política de cancelación?",
+        a: "We require at least 6 hours notice for any cancellations or rescheduling. Cancellations within 6 hours of the appointment may incur a $40 fee to compensate our team for their scheduled time.",
+        a_es: "Requerimos al menos 6 horas de anticipación para cualquier cancelación o reprogramación. Las cancelaciones dentro de las 6 horas de la cita pueden incurrir en una tarifa de $40 para compensar a nuestro equipo por su tiempo programado."
+      },
+      {
+        q: "How do I pay for my service?",
+        q_es: "¿Cómo pago por mi servicio?",
+        a: "We send secure digital invoices via email/text after the cleaning is completed. You can pay via credit card, Apple Pay, or bank transfer. We also accept Venmo, CashApp, and Zelle upon request.",
+        a_es: "Enviamos facturas digitales seguras por correo electrónico/texto después de completar la limpieza. Puede pagar con tarjeta de crédito, Apple Pay o transferencia bancaria. También aceptamos Venmo, CashApp y Zelle previa solicitud."
+      },
       {
         q: "What's included in Basic vs. Premium Cleaning?",
         q_es: "¿Qué se incluye en la Limpieza Básica frente a la Premium?",
-        a: "Basic cleaning covers essential maintenance. Premium cleaning handles larger spaces with additional focus on kitchen detail.",
-        a_es: "La limpieza básica cubre el mantenimiento esencial. La limpieza Premium se encarga de espacios más grandes con un enfoque adicional en los detalles de la cocina."
+        a: "Basic cleaning covers essential maintenance like floors, dusting, and trash. Premium cleaning adds deep kitchen focus (microwave, cabinet exteriors) and linen changes. Check our Services page for the full checklist!",
+        a_es: "La limpieza básica cubre el mantenimiento esencial como pisos, polvo y basura. La limpieza Premium agrega un enfoque profundo en la cocina (microondas, exteriores de gabinetes) y cambios de sábanas. ¡Consulte nuestra página de Servicios para ver la lista completa!"
       }
     ]
   }

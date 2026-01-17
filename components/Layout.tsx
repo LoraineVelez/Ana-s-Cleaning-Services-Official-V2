@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Phone, Menu, X, Instagram, Facebook, MessageCircle, Globe, Languages, Copy, Check, ExternalLink } from 'lucide-react';
@@ -194,8 +195,12 @@ const Footer = () => {
               </div>
             </div>
             <div className="flex gap-4 mt-4">
-              <Instagram className="text-gray-400 hover:text-[#FF1493] cursor-pointer transition-colors" size={20} />
-              <Facebook className="text-gray-400 hover:text-[#FF1493] cursor-pointer transition-colors" size={20} />
+              <a href="https://www.instagram.com/anascleaningservicesphl/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-[#FF1493] transition-colors">
+                <Instagram size={20} />
+              </a>
+              <a href="https://www.facebook.com/profile.php?id=61586802835345" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-[#FF1493] transition-colors">
+                <Facebook size={20} />
+              </a>
             </div>
           </div>
 

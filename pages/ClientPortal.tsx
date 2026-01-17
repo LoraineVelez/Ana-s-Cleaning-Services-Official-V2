@@ -1,3 +1,4 @@
+
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mail, Phone, Gift, Sparkles, Copy, Check, Star, Heart, ExternalLink, CreditCard, ShieldCheck, Wallet, Smartphone, Loader2, RefreshCw, MessageSquare, Send } from 'lucide-react';
@@ -18,6 +19,7 @@ const ClientPortal = () => {
   const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
   const [phoneCopied, setPhoneCopied] = useState(false);
+  const [emailCopied, setEmailCopied] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -51,6 +53,12 @@ const ClientPortal = () => {
     navigator.clipboard.writeText("(267) 854-9564");
     setPhoneCopied(true);
     setTimeout(() => setPhoneCopied(false), 2000);
+  };
+
+  const handleCopyEmail = () => {
+    navigator.clipboard.writeText("anascleaningservicesphl@gmail.com");
+    setEmailCopied(true);
+    setTimeout(() => setEmailCopied(false), 2000);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -92,7 +100,6 @@ const ClientPortal = () => {
 
     setErrors(newErrors);
 
-    // Focus first error
     if (newErrors.firstName) firstNameRef.current?.focus();
     else if (newErrors.lastName) lastNameRef.current?.focus();
     else if (newErrors.email) emailRef.current?.focus();
@@ -110,11 +117,8 @@ const ClientPortal = () => {
     if (!validate()) return;
     
     setIsSubmitting(true);
-    
     const webhookUrl = "https://hooks.zapier.com/hooks/catch/26066533/ugqpdwr/";
     const formName = 'Schedule Change Request';
-    
-    // Normalize phone to US E.164: +1XXXXXXXXXX
     const digits = formData.phone.replace(/\D/g, '');
     const normalizedPhone = `+1${digits}`;
 
@@ -137,19 +141,15 @@ const ClientPortal = () => {
     };
 
     try {
-      // Netlify submission
       await fetch("/", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: encode(payload)
       });
-
-      // Zapier webhook
       await fetch(webhookUrl, {
         method: 'POST',
         body: JSON.stringify(payload),
       });
-
       setIsSubmitted(true);
     } catch (error) {
       console.error('Submission error:', error);
@@ -340,7 +340,6 @@ const ClientPortal = () => {
                 <h2 className="text-2xl md:text-4xl font-bold text-gray-900 tracking-tight">{t('portal.payment.title', 'Payments')}</h2>
               </div>
               
-              {/* Preferred: Square Invoices Card */}
               <div className="bg-gradient-to-br from-white to-pink-50/40 p-6 md:p-10 xl:p-14 rounded-[2.5rem] md:rounded-[3.5rem] border-2 border-pink-100 shadow-sm mb-8 md:mb-12 relative overflow-hidden group">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-pink-200/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 group-hover:scale-125 transition-transform duration-1000"></div>
                 
@@ -365,7 +364,6 @@ const ClientPortal = () => {
                 </div>
               </div>
 
-              {/* Other Methods */}
               <div className="space-y-6 md:space-y-8">
                 <div className="flex items-center gap-4">
                   <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] whitespace-nowrap">Other Accepted Methods</h4>
@@ -400,7 +398,6 @@ const ClientPortal = () => {
 
             {/* Referral & Review Grid */}
             <div className="grid md:grid-cols-2 gap-6 md:gap-8 lg:gap-12">
-              {/* Share the Sparkle */}
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -428,7 +425,6 @@ const ClientPortal = () => {
                 </div>
               </motion.div>
 
-              {/* Review Section */}
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -478,7 +474,7 @@ const ClientPortal = () => {
               <h3 className="text-2xl md:text-3xl font-black text-gray-900 mb-8 md:mb-12 tracking-tight">Support</h3>
               <div className="space-y-10 md:space-y-12">
                 
-                {/* Contact: Phone Link */}
+                {/* Contact: Phone */}
                 <div className="group space-y-3">
                    <div className="flex items-center gap-3 md:gap-4">
                       <div className="w-10 h-10 md:w-12 md:h-12 bg-pink-50 rounded-xl md:rounded-2xl flex items-center justify-center text-[#FF1493] group-hover:scale-110 transition-transform border border-pink-100 shadow-sm">
@@ -492,20 +488,23 @@ const ClientPortal = () => {
                    {phoneCopied && <p className="text-[10px] text-green-500 font-bold mt-1">Number copied!</p>}
                 </div>
 
-                {/* Contact: Email Button */}
-                <div className="space-y-4 md:space-y-6">
+                {/* Contact: Email */}
+                <div className="group space-y-3">
                    <div className="flex items-center gap-3 md:gap-4">
-                      <div className="w-10 h-10 md:w-12 md:h-12 bg-pink-50 rounded-xl md:rounded-2xl flex items-center justify-center text-[#FF1493] border border-pink-100 shadow-sm">
+                      <div className="w-10 h-10 md:w-12 md:h-12 bg-pink-50 rounded-xl md:rounded-2xl flex items-center justify-center text-[#FF1493] group-hover:scale-110 transition-transform border border-pink-100 shadow-sm">
                         <Mail size={20} className="md:w-6 md:h-6" />
                       </div>
                       <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">{t('portal.contact.email_label', 'EMAIL US')}</span>
                    </div>
                    <a 
                       href="mailto:anascleaningservicesphl@gmail.com"
-                      className="w-full flex items-center justify-center gap-3 md:gap-4 bg-pink-50/50 text-[#FF1493] py-4 md:py-6 rounded-xl md:rounded-3xl font-black text-lg md:text-xl border-2 border-transparent hover:border-pink-100 hover:bg-pink-100/50 transition-all shadow-sm"
+                      className="block text-gray-900 font-black text-base md:text-lg hover:text-[#FF1493] transition-colors leading-tight tracking-tight break-all"
                     >
-                      {t('portal.contact.email_btn', 'Email')} <ExternalLink size={20} className="md:w-6 md:h-6" />
+                      anascleaningservicesphl@gmail.com
                     </a>
+                   <button onClick={handleCopyEmail} className="text-[10px] text-gray-400 hover:text-[#FF1493] font-bold underline decoration-pink-100 flex items-center gap-1 transition-colors">
+                     {emailCopied ? 'Email Copied!' : 'Copy Email Address'}
+                   </button>
                 </div>
 
                 <div className="pt-8 md:pt-10 border-t border-gray-50 text-center">
