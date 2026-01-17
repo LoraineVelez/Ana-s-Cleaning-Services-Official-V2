@@ -7,7 +7,13 @@ import { SERVICES, TESTIMONIALS } from '../constants';
 import { useQuoteForm } from '../context/QuoteContext';
 import { useTranslation } from '../context/LanguageContext';
 
-const CLIENT_PHOTO_URL = "https://i.ibb.co/Jw0Hgw6J/Screenshot-2026-01-08-at-2-44-41-AM.png";
+const CLIENT_PHOTO_URLS = [
+  "https://i.ibb.co/PZ56yN4h/Screenshot-2026-01-16-at-5-39-50-PM.png",
+  "https://i.ibb.co/gFfHC2k8/Screenshot-2026-01-16-at-5-39-21-PM.png",
+  "https://i.ibb.co/218nrsRB/Screenshot-2026-01-16-at-5-39-27-PM.png",
+  "https://i.ibb.co/ynpYsB0t/Screenshot-2026-01-16-at-5-39-03-PM.png"
+];
+
 const STORY_PHOTO_URL = "https://i.ibb.co/QFBQrCnQ/Anasgirls.png";
 
 const SparkleText = ({ children }: { children?: React.ReactNode }) => {
@@ -68,8 +74,8 @@ const Hero = () => {
           </div>
           <div className="mt-8 flex flex-col sm:flex-row items-center gap-3 justify-center md:justify-start">
             <div className="flex -space-x-2">
-              {[1, 2, 3, 4].map(i => (
-                <img key={i} src={CLIENT_PHOTO_URL} className="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-white shadow-sm object-cover" alt="Client" />
+              {CLIENT_PHOTO_URLS.map((url, i) => (
+                <img key={i} src={url} className="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-white shadow-sm object-cover" alt="Client" />
               ))}
             </div>
             <p className="text-[10px] md:text-sm text-gray-500 font-bold uppercase tracking-wider">{t('hero.trust', 'Trusted by 500+ Philly households')}</p>
@@ -88,6 +94,22 @@ const Hero = () => {
             alt="Clean Living Room" 
             className="relative rounded-[2rem] md:rounded-[3rem] shadow-2xl z-10 w-full aspect-[4/3] md:aspect-square object-cover"
           />
+          
+          {/* Floating Trust Card */}
+          <div className="absolute -bottom-6 -left-2 md:-left-12 z-20 bg-white p-4 md:p-5 rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-gray-50 flex items-center gap-4 animate-float">
+            <div className="relative">
+              <div className="w-10 h-10 md:w-12 md:h-12 bg-pink-50 rounded-2xl flex items-center justify-center">
+                <Star className="text-yellow-400 fill-yellow-400" size={24} />
+              </div>
+              <div className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-white animate-pulse" />
+            </div>
+            <div className="pr-4">
+              <div className="flex items-center gap-1">
+                <span className="text-sm md:text-base font-black text-gray-900 leading-none">5.0 Philly Rating</span>
+              </div>
+              <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-1.5 whitespace-nowrap">Verified Professional</p>
+            </div>
+          </div>
         </motion.div>
       </div>
     </section>
@@ -125,10 +147,10 @@ const StorySection = () => {
             {t('story.title', 'Small Team.')} <span className="text-[#FF1493]">{t('story.title_accent', 'Big Heart.')}</span>
           </h2>
           <p className="text-gray-600 text-lg md:text-xl leading-relaxed">
-            {t('story.p1', 'We are a small, locally run cleaning company.')}
+            {t('story.p1', 'We are a small, locally run cleaning company right here in Philadelphia. We believe that clients work best with a real team that takes the time to understand individual preferences.')}
           </p>
           <p className="text-gray-500 text-base md:text-lg leading-relaxed">
-            {t('story.p2', 'Founded in 2020...')}
+            {t('story.p2', 'Founded in 2020, we’ve built our reputation on the "Ana Standard"—a commitment to consistency and attention to detail.')}
           </p>
           <div className="pt-4">
             <Link 
@@ -155,6 +177,7 @@ const TestimonialsSection = () => {
         </div>
       </div>
       <div className="grid md:grid-cols-3 gap-6 md:gap-8">
+        {/* Fix: Changed TESTIMALIALS to TESTIMONIALS to fix 'Cannot find name' error */}
         {TESTIMONIALS.slice(0, 3).map((testimonial, idx) => (
           <motion.div 
             key={testimonial.id}
@@ -201,7 +224,7 @@ const ServicesSlider = () => {
       <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-10 md:mb-12 gap-6 text-center md:text-left">
         <div className="max-w-xl">
           <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-2 md:mb-4 leading-tight">{t('services.slider_title', 'The Perfect Clean')}</h2>
-          <p className="text-gray-500 text-base md:text-lg">{t('services.slider_desc', 'Drag or use arrows...')}</p>
+          <p className="text-gray-500 text-base md:text-lg">{t('services.slider_desc', 'Drag or use arrows to explore our Philadelphia services.')}</p>
         </div>
         <Link to="/services" className="text-[#FF1493] font-bold text-sm md:text-base flex items-center gap-2">
           {t('services.all', 'All Services')} <ArrowRight size={18} />
@@ -246,7 +269,7 @@ const Home = () => {
               {t('cta.ready', 'Ready for a')} <SparkleText>{t('cta.ready_accent', 'sparkling')}</SparkleText> {t('cta.ready_end', 'home?')}
             </h2>
             <p className="text-base md:text-xl text-pink-50 mb-8 md:mb-12 opacity-90 font-medium">
-              {t('cta.desc', 'Start your journey today.')}
+              {t('cta.desc', 'Start your journey toward a cleaner space today. Contact us for a personalized quote.')}
             </p>
             <div className="flex flex-col gap-4 items-center">
               <button onClick={openQuoteForm} className="w-full sm:w-auto bg-white text-[#FF1493] px-8 md:px-10 py-4 md:py-5 rounded-2xl text-base md:text-lg font-bold shadow-xl shadow-pink-200">
